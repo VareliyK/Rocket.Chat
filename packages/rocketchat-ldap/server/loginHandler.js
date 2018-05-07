@@ -34,6 +34,15 @@ Accounts.registerLoginHandler('ldap', function(loginRequest) {
 
 	logger.info('Init LDAP login', loginRequest.username);
 
+	if (typeof loginRequest.ldapPass === 'undefined') {
+		throw new Meteor.Error('LDAP-login-error', `LDAP Authentication failed with provided username [${loginRequest.username}]`);
+	}
+
+	if (loginRequest.ldapPass === '' || loginRequest.ldapPass === null) {
+		throw new Meteor.Error('LDAP-login-error', `LDAP Authentication failed with provided username [${loginRequest.username}]`);
+	}
+
+
 	if (RocketChat.settings.get('LDAP_Enable') !== true) {
 		return fallbackDefaultAccountSystem(this, loginRequest.username, loginRequest.ldapPass);
 	}
